@@ -1,0 +1,204 @@
+---
+title: 'Stats 250: Lab 2 Resources'
+author: "Instructional Team"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Instructions
+
+Complete the lab exercises and Dive Deeper questions below. Lab exercises will be graded out of 2 points each and the Dive Deeper questions will be graded out of 3 points each - all of them will be graded for *correctness*. Upon completion, follow the submission instructions at the bottom of this document. We strongly encourage you to work on this assignment with a partner. 
+
+***
+
+### Background
+
+The `satscores` data set recorded information from all 50 US states to study the relationship between state-level expenditures on public education and positive student outcomes as measured by SAT scores. For each of the 50 states, data were collected in 2005 on two main variables influencing education expenditures: mean high school teacher pay and mean class size across all secondary schools within a state. 
+
+The data contain information on the following variables:
+
+1. `mean.class.size`: average student/teacher ratio in public high schools
+2. `mean.salary`: the estimated average annual salary of teachers in public elementary schools
+3. `perc.takers`: percentage of all eligible students who actually took the SAT in year data were recorded
+4. `mean.SAT`: mean total SAT score for all public school students who took the test
+5. `salary.group`: a variable that groups estimated average annual salary into levels (low-wage, medium-wage, well-paid)
+6. `class.size.group`: a variable that groups estimated mean high school class size into levels (small, medium, large)
+7. `takers.group`: a variable that groups percentage of eligible students who take the SAT as (low, medium, high)
+
+
+Use the following code chunk to read in the above data set.
+
+```{r read_data}
+load("satscores.rda")
+```
+
+And be sure to load in the required packages!
+
+```{r load_packages}
+library(ggplot2)
+```
+
+***
+
+### Lab Exercises
+
+After reading the background above, complete the following lab exercises. Remember, these exercises are worth 2 points each and are graded for _correctness_.
+
+> 1. Create a histogram that displays the distribution of mean state-level SAT scores. Be sure to appropriately update the plot title and axis labels.
+
+```{r exercise1}
+# Replace this comment with your code
+
+```
+
+
+
+> 2. Calculate at least three useful numerical summaries that would help provide a thorough description of this variable's distribution. 
+
+```{r exercise2}
+# Replace this comment with your code
+
+```
+
+
+
+> 3. Using the histogram from Exercise 1 and the exact numerical values calculated in Exercise 2, thoroughly describe the distribution of mean state-level SAT scores. Your response should be 2 - 3 sentences in length.
+
+*Answer:* Replace this text with your answer.
+
+
+
+> 4. Public policies makers were interested in exploring the following research question: *Is amount that teachers get paid associated with positive high school student outcomes, as measured by the SAT?* To answer this question, create a set of side-by-side boxplots that display mean state-level SAT scores by `salary.group`. Be sure to appropriately update the plot title and axis labels.
+
+```{r exercise4}
+# Replace this comment with your code
+
+```
+
+
+
+> 5. Use the `aggregate()` function and `summary()` function to compute the mean and five-number summaries of the `mean.SAT` variable for states that provide teachers, on average, with `low-wage`, `medium-wage`, and `well-paid` salaries. Remember, the output will not display in your R Markdown document, but it will show up in the knitted html file.
+
+```{r exercise5}
+# Replace this comment with your code
+
+```
+
+
+
+> 6. Using your results from Exercises 4 and 5, write a 3 - 4 sentence conclusion regarding the original question that motivated collection of these data: *Is amount that teachers get paid associated with positive high school student outcomes, as measured by the SAT?*
+
+*Answer:* Replace this text with your answer
+
+
+
+> 7. In Exercises 4 - 6, you likely observed a surprising relationship between the variables `salary.group` and `mean.sat`. Public policy makers suspected that other variables might be influencing (i.e., confounding) this relationship. On your own, create two stacked barcharts: one barchart should explore the association between `salary.group` and `class.size.group`; the other should explore the association between `salary.group` and `takers.group`. Below the plots, identify which graph you believe shows the *stronger* association between variable pairs. Then, provide a 1 - 2 sentence interpretation of plot.
+
+```{r exercise7a}
+# Replace this comment with your code
+
+```
+
+```{r exercise7b}
+# Replace this comment with your code
+
+```
+
+*Answer:* Replace this text with your answer.
+
+
+
+***
+
+
+
+### Peer Review Practice
+
+Instead of Dive Deeper questions, this section of the lab will focus on how to provide helpful peer feedback. In addition to our short overview in the lab slides, we have provided you with a more detailed document about giving helpful feedback (linked below). After reviewing this document, please complete the following steps:
+
+[ELI Giving Helpful Feedback](link)
+
+1. Read the prompt provided to the student
+2. Read the example response provided by the students
+3. Provide helpful feedback for the student
+
+Note: this section of the lab will be worth 6 points.  
+
+***
+
+#### Prompt
+
+In order for `takers.group` to be considered a *confounding variable*, it must be shown that it has an association with *both* the explanatory variable (`salary.group`) *and* the response variable (`mean.SAT`). Create a plot, with appropriate labels, that explores the association between `takers.group` and `mean.SAT`. Then, in the space provided, write a conclusion regarding the original research question (below) that incorporates your findings from Exercises 6 and 7.
+
+*Is amount that teachers get paid associated with positive high school student outcomes, as measured by the SAT?*
+
+***
+
+#### Example Response
+
+```{r model_response, echo = FALSE}
+ggplot(data = sat, aes(x = takers.group, y = mean.SAT)) + 
+  
+  geom_boxplot() +
+  
+  labs(title = "Boxplot of State-Level Mean SAT Score by Percent Taken",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Percentage of eligible students who took the SAT",
+       y = "Mean SAT Score (in points)")
+```
+
+In Exercise 6, we witnessed an interesting pattern that showed that states that pay teachers *less*, on average, tended to have higher mean SAT scores. This relationship was quite surprising, as it contradicted our original expectation that paying high school teachers more would have a positive association with student performance on standardized tests. 
+
+In Exercise 7, however, we observed that states which tend to pay teachers a "low wage" were more likely to be in the "small" `takers.group` category. We interpreted this to mean that states that have low teacher wages also tend to be places where only a small subset of students actually take the SAT. In contrast, states that pay teachers handsomely tended to see a much larger percentage of their high school student populations taking the SAT. The plot directly above shows that, when only a small subset of students actually take the SAT, the mean score they get tends to be quite good (likely because the only students who take the SAT are the ones who expect to do well). When a state has a large proportion of its student population take the SAT (perhaps because it is required by law, as is the case in some states), the mean score tends to be much lower. We hypothesize this might be because when nearly ALL students in a state take the SAT, this includes students who aren't well-prepared for the test, and who wouldn't take it if they were not required to. 
+
+Thus, we can conclude that the percentage of eligible students who take the SAT within a state confounds the relationship between teacher salary and student performance (as measured by the SAT). This is because `takers.group` was shown to have an association with both the explanatory variable in the original research question (`mean.salary`) AND the response variable (`mean.SAT`).
+
+***
+
+#### Peer Feedback
+Offer helpful feedback for the student below. Each component should be 2 - 3 sentences in length. Please consult the "ELI Giving Helpful Feedback" document (linked below) if you need assistance forming your responses. 
+
+*Describe:* Replace this text with your answer.
+
+*Evaluate:* Replace this text with your answer.
+
+*Suggest:* Replace this text with your answer.
+
+
+
+***
+
+
+
+### Submission Instructions
+
+Once you have finished, follow the instructions below to submit your work.
+
+1. At the top of the document, update the `author` field. Do not change anything else at the top of the document.
+
+2. Click the Knit button to create an HTML file of your work.
+
+3. In the Files pane (bottom right window), check the box next to `lab02_assignment.html`. 
+
+4. In the Files pane, click on the gear icon (More) and select "Export..."  
+
+5. Do not change the file name (`lab02_assignment.html`). Click Download and save the file to your computer. 
+
+6. On the Stats 250 Canvas site, navigate to the Lab 1 assignment. 
+
+7. Upload your saved `lab02_assignment.html` file. 
+
+8. Click "Submit Assignment". Congratulations, you are done with Lab 2!
+
+
+
+

@@ -1,0 +1,308 @@
+---
+title: 'Stats 250: Lab 2 Resources'
+author: "Instructional Team"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Learning Objectives
+1. Review the functions covered in Lab 1
+2. Create a side-by-side boxplot
+3. Compute numerical summaries across categories
+4. Create a stacked bar chart
+5. Create a grouped bar chart
+6. Create a two-way frequency table
+
+
+***
+
+
+## Coding Examples
+
+### Lab 1 Review
+
+In Lab 1, you learned how to create a bar chart and histogram using the `ggplot()` function. Let's have a quick review! 
+
+
+#### External Packages
+
+We will be utilizing the ggplot2 package again this lab. Remember, you must run this code chunk in order for any code chunks that use `ggplot()` below to run. 
+
+```{r load_packages}
+library(ggplot2)
+```
+
+We'll also take this time to load in the `penguins` data set. 
+
+```{r read_data}
+penguins <- read.csv("penguins.csv")
+```
+
+
+#### ggplot
+
+The `ggplot()` function requires three main components: 
+
+1. the **data** set
+2. the **aes**thetics (or variables)
+3. the **geom**etric object (or plot type)
+
+The basic structure can be found below. Note: this code chunk will return an error (and that's okay!) - it's just here to act as a code template for ggplot.
+
+```{r ggplot_structure, eval = FALSE}
+ggplot(data = dataset, aes(x = variable)) +
+  
+  geom_object() + 
+  
+  labs(title = "Main Title",
+       subtitle = "Subtitle",
+       x = "X-Axis Label",
+       y = "Y-Axis Label")
+```
+
+We learned how to create a histogram for a quantitative variable...
+
+```{r histogram_example}
+ggplot(data = penguins, aes(x = body_mass_g)) + 
+  
+  geom_histogram(bins = 30,
+                 color = "black",
+                 fill = "grey") +
+  
+  labs(title = "Histogram of Penguin Body Mass",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Body Mass (in grams)",
+       y = "Frequency")
+```
+
+And a bar chart for a categorical variable...
+
+```{r bar_chart_example}
+ggplot(data = penguins, aes(x = species)) + 
+  
+  geom_bar(color = "black",
+           fill = c("orange", "purple", "darkgreen")) +
+  
+  labs(title = "Bar Chart of Penguin Species",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Species",
+       y = "Frequency")
+```
+
+Both of these plots only visualize *one* variable (also known as a *uni*variate analysis). What if we wanted to see how *two* variables interact (also known as a *bi*variate analysis)?
+
+*Potential Think-Pair-Share* What questions could we ask that involve two variables from the penguins data set?
+
+
+### Side-by-Side Boxplots
+
+A side-by-side boxplot is a great plot for comparing a *quantitative* variable across the groups of a *categorical* variable. 
+
+Suppose we wanted to create a side-by-side boxplot that compares the body mass of the three different penguin species. We would use the following code:
+
+```{r boxplot_example}
+ggplot(data = penguins, aes(x = species, y = body_mass_g)) + 
+  
+  geom_boxplot() +
+  
+  labs(title = "Boxplot of Penguin Body Mass by Species",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Species",
+       y = "Body Mass (in grams)")
+```
+
+Two important things to note:
+
+- The aesthetics (aes) argument now uses *two* variables
+- The geometric object for a boxplot is `geom_boxplot()`
+
+Otherwise, our code is very similar to the histogram and bar chart code from Lab 1. 
+
+**Demo #1**: Give it a try and create a side-by-side boxplot of flipper length by sex. We recommend copying, pasting, and editing the code from the above code chunk -- but you're also welcome to try typing it from scratch. Be sure to update the title and labels.
+
+```{r demo1, error = T}
+# Replace this comment with your code
+
+```
+
+What questions do you have? Now is a great time to ask!
+
+
+### Numerical Summaries by Group
+
+Now that we can plot by group, we should learn how to compute numerical summaries by group. We can eyeball values from the plots above, but the `aggregate()` function will help use calculate the exact numbers. 
+
+Suppose we want to calculate the median body mass for each penguin species (Adelie, Chinstrap, and Gentoo). We can do this with the following code:
+
+```{r aggregate_example}
+aggregate(body_mass_g ~ species, 
+          data = penguins, 
+          FUN = median)
+```
+
+Do these numbers match what's found in our side-by-side boxplot above?
+
+A few things to note about the aggregate function:
+
+1. Order matters! We must input the quantitative variable first
+2. We use a tilde (~) to separate the variables
+3. The last argument (`FUN`) is short for "function". You can use whichever numerical summary you wish to calculate (median, mean, min, max, IQR, etc.). 
+
+
+**Demo #2**: Calculate the maximum flipper length for female and male penguins. Verify that these numbers match what you saw in the side-by-side boxplot and in the faceted histograms!
+
+```{r demo2, error = T}
+# Replace this text with your code
+
+```
+
+When describing data, it is good practice to report the exact values - rather than simply eyeballing the numbers from the plots. 
+
+Note: some of the numerical summaries (such as `summary()` and `quantile()`) can be a little finicky with the `aggregate()` function. The results will not appear after running the code chunk, but they will appear in your knitted html file! If you run the code chunk below, R will not return any output:
+
+```{r aggregate_summary}
+aggregate(body_mass_g ~ species, 
+          data = penguins, 
+          FUN = summary)
+```
+
+But if you knit the document, you'll find that the code does run properly - and R returns the aggregated numerical summaries, as desired. 
+
+
+### Stacked/Grouped Bar Charts
+
+What if we wanted to visualize how *two categorical* variables interact? We could use either a stacked bar chart or a grouped bar chart!  
+
+Suppose we wanted to analyze the relationship between species and island. In other words, we want to now if any of the species are more prevalent in any of the locations observed. We could use the following code:
+
+```{r stacked_bar_chart_example}
+ggplot(data = penguins, aes(x = island, fill = species)) + 
+  
+  geom_bar() +
+  
+  labs(title = "Bar Chart of Penguin Species by Island",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Island",
+       y = "Frequency")
+```
+
+In order to accomplish this, we added `fill = species` to the `aes` argument. We can read `aes(x = island, fill = species)` as plot the various islands along the x-axis, but fill the bars with a different color for each penguin species. 
+
+We can quickly see that...
+
+- there are a mix of Adelie and Gentoo penguins on Biscoe island
+- there are a mix of Adelie and Chinstrap penguins on Dream island
+- there are no Chinstrap or Gentoo penguins on Torgersen island (only Adelie penguins were observed)
+
+If a grouped bar chart is desired (instead of a stacked bar chart), we simply add `position = "dodge"` to `geom_bar()`. 
+
+```{r grouped_bar_chart_example}
+ggplot(data = penguins, aes(x = island, fill = species)) + 
+  
+  geom_bar(position = "dodge") +
+  
+  labs(title = "Bar Chart of Penguin Species by Island",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Island",
+       y = "Frequency")
+```
+
+**Demo #3**: The researchers tried to observe the same number of female and male penguins across the three study years. Check this using a grouped bar chart of sex by year. We recommend copying, pasting, and editing the code from the above code chunk -- but you're also welcome to try typing it from scratch. Be sure to update the title and labels.  
+
+```{r demo3, error = T}
+# Replace this text with your code
+
+```
+
+Your bars should increase slightly across the years, but be pretty similar between female and male. 
+
+
+### Two-Way Frequency Table
+
+Similar to numerical summaries by group, we can use a two-way frequency table (also known as a contingency table) to compute the exact values from our plot. 
+
+```{r two_way_frequency_table_example1}
+table(penguins$species, penguins$island)
+```
+
+The above code separates the two variables with a comma. Swapping the variables will change which variable appears as the rows and which appears as the columns. We can "nest" the above code within the `addmargins()` function to add row and column totals to the table. 
+
+```{r two_way_frequency_table_example2}
+addmargins(table(penguins$species, penguins$island))
+```
+
+
+**Demo #4**: Create a two-way frequency table *with* row and column totals for the counts of female/male penguins by study year. Do your values appear to match the grouped bar chart from Demo #4?  
+
+```{r demo4, error = T}
+# Replace this text with your code
+
+```
+
+That's all we have for Lab 2! What questions do you have?
+
+Now, click on the file titled `lab02_assignment.Rmd` in the bottom right window to open up the assignment for today.
+
+
+
+
+
+
+
+
+
+### Customizing Color (Optional!)
+
+To manually select the color used in the boxplot, we add the `fill` argument to our `geom_boxplot()` code.
+
+```{r boxplot_with_color}
+ggplot(data = penguins, aes(x = species, y = body_mass_g)) + 
+  
+  geom_boxplot(fill = "khaki") +
+  
+  labs(title = "Boxplot of Penguin Body Mass by Species",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Species",
+       y = "Body Mass (in grams)")
+```
+
+To manually select the colors used in the stacked/grouped bar charts, we add the code `+ scale_fill_manual()` and specify the colors you want to use.
+
+```{r stacked_bar_chart_with_color}
+ggplot(data = penguins, aes(x = island, fill = species)) + 
+  
+  geom_bar() +
+  
+  labs(title = "Bar Chart of Penguin Species by Island",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Island",
+       y = "Frequency") +
+  
+  scale_fill_manual(values = c("darkblue", "orange", "grey"))
+```
+
+Note: a `+` sign was added after the `labs()` section of the code.
+
+```{r grouped_bar_chart_with_color}
+ggplot(data = penguins, aes(x = island, fill = species)) + 
+  
+  geom_bar(position = "dodge") +
+  
+  labs(title = "Bar Chart of Penguin Species by Island",
+       subtitle = "by Stats 250 Instructional Team",
+       x = "Island",
+       y = "Frequency") +
+  
+  scale_fill_manual(values = c("darkblue", "orange", "grey"))
+```
+
